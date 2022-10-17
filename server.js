@@ -26,7 +26,7 @@ app.use(bodyParser.json())
 // use our logger
 app.use(logger);
 
-//hool up your routes
+//hook up your routes
 app.use('/api/v1/category', category)
 app.use('/api/v1/item', item)
 app.use('/api/v1/user', user)

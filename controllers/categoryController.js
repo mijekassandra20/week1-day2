@@ -1,5 +1,12 @@
 // For '/' endpoint
 const getCategories = (req, res, next) => {
+    // query parameter
+    // check if array is empty or not, length
+    if (Object.keys(req.query).length) {
+        const category = req.query.categoryName
+        console.log(`Searching for category: ${category}`);
+    }
+
     res
     .status(200)
     .setHeader('Content-Type', 'application/json')
@@ -9,7 +16,7 @@ const postCategory = (req, res, next) => {
     res
     .status(201)
     .setHeader('Content-Type', 'application/json')
-    .json({ success: true, msg: 'create new category! '})
+    .json({ success: true, msg: `Create new category: ${req.body.categoryName} and this is for gender: ${req.body.gender}`}) 
 }
 
 const deleteCategories = (req, res, next) => {

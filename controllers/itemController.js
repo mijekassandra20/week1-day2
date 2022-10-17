@@ -1,5 +1,32 @@
 // For '/' endpoint
 const getItems = (req, res, next) => {
+
+    if(Object.keys(req.query).length){
+        //query parameter
+
+        const {
+            gender,
+            price,
+            isClearance,
+            category,
+            colors,
+            sizes
+        } = req.query
+
+        const filter = []
+
+        if(gender) filter.push(gender);
+        if(price) filter.push(price);
+        if(isClearance) filter.push(isClearance);
+        if(category) filter.push(category);
+        if(colors) filter.push(colors);
+        if(sizes) filter.push(sizes);
+
+        for (let i = 0; i < filter.length; i++){
+            console.log(`Searching item(s) by: ${filter[i]}`)
+        }
+    }
+
     res
     .status(200)
     .setHeader('Content-Type', 'application/json')
@@ -10,7 +37,19 @@ const postItem = (req, res, next) => {
     res
     .status(201)
     .setHeader('Content-Type', 'application/json')
-    .json({ success: true, msg: 'create new item! '})
+    .json({ 
+        success: true, 
+        msg: `create one item with the following fields:
+        Item name: ${req.body.itemName}
+        Item Description: ${req.body.itemDescription}
+        Gender: ${req.body.gender}
+        Price: ${req.body.price}
+        isClearance: ${req.body.isClearance}
+        Category: ${req.body.category}
+        colors: ${req.body.colors}
+        size: ${req.body.sizes}
+    `
+    })
 }
 
 const deleteItems = (req, res, next) => {
@@ -50,5 +89,4 @@ module.exports = {
     getItem,
     updateItem,
     deleteItem
-
 }

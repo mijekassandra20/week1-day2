@@ -9,17 +9,24 @@ const {
     deleteUser
 
 } = require('../controllers/userController');
+const reqLogger = require('../middlewares/reqLogger');
+
+const {
+    userValidator
+
+}= require('../middlewares/utils/validator');
+
 
 //root
 router.route('/')
-    .get(getUsers)
-    .post(postUser)
-    .delete(deleteUsers)
+    .get(reqLogger, getUsers)
+    .post(reqLogger, userValidator, postUser)
+    .delete(reqLogger, deleteUsers)
 
 //categoryId
 router.route('/:userId')
-    .get(getUser)
-    .put(updateUser)
-    .delete(deleteUser)
+    .get(reqLogger, getUser)
+    .put(reqLogger, updateUser)
+    .delete(reqLogger, deleteUser)
 
 module.exports = router;
