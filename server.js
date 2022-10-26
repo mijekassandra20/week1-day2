@@ -4,15 +4,22 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const logger = require('./middlewares/logger');
 const errorHandler = require('./middlewares/error');
-const category = require('./routes/category')
-const item = require('./routes/item')
-const user = require('./routes/user')
+const category = require('./routes/category');
+const item = require('./routes/item');
+const user = require('./routes/user');
+const connectedDB = require('./config/db');
+const cookieParser = require('cookie-parser');
+const fileupload = require('express-fileupload')
 
 
 //To read our config values
 dotenv.config({path: './config/config.env'})
 
-//initialize our express framework
+// connection to DB
+connectedDB();
+
+
+// initialize our express framework
 const app = express();
 
 //use the morgan logger for development purposes ONLY
@@ -22,6 +29,12 @@ if (process.env.NODE_ENV === 'development') {
 
 //read/parse json data
 app.use(bodyParser.json())
+
+// parse cookies
+app.use(cookieParser())
+
+// file upload middleware
+app.use(fileupload())
 
 // use our logger
 app.use(logger);

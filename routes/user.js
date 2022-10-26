@@ -12,14 +12,15 @@ const {
 const reqLogger = require('../middlewares/reqLogger');
 
 const {
-    userValidator
+    userValidator,
+    adminValidator
 
 }= require('../middlewares/utils/validator');
 
 
 //root
 router.route('/')
-    .get(reqLogger, getUsers)
+    .get(reqLogger, adminValidator, getUsers)
     .post(reqLogger, userValidator, postUser)
     .delete(reqLogger, deleteUsers)
 

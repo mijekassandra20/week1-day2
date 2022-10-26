@@ -1,52 +1,119 @@
+const Category = require('../models/Category');
+
 // For '/' endpoint
-const getCategories = (req, res, next) => {
+const getCategories = async (req, res, next) => {
     // query parameter
-    // check if array is empty or not, length
+    
+    const filter = {};
+    const options = {}; 
+
     if (Object.keys(req.query).length) {
-        const category = req.query.categoryName
-        console.log(`Searching for category: ${category}`);
+        const {
+            categoryName,
+            gender,
+            sortByCategory,
+            limit
+        } = req.query;
+
+        // filter
+        if(categoryName) filter.categoryName = true;
+        if(gender) filter.gender = true;
+
+        // options
+        if (limit) options.limit  = limit;
+        if (sortByCategory) options.sort = {
+            category: sortByCategory === 'asc'? 1 : -1
+        }  
     }
 
-    res
-    .status(200)
-    .setHeader('Content-Type', 'application/json')
-    .json({ success: true, msg: 'show me all categories '})
-}
-const postCategory = (req, res, next) => {
-    res
-    .status(201)
-    .setHeader('Content-Type', 'application/json')
-    .json({ success: true, msg: `Create new category: ${req.body.categoryName} and this is for gender: ${req.body.gender}`}) 
+    try {
+        const categories = await Category.find({}, filter, options);
+
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(categories)
+    } catch (err) {
+        throw new Error(`Error retrieving categories: ${err.message}`);
+    }
 }
 
-const deleteCategories = (req, res, next) => {
-    res
-    .status(200)
-    .setHeader('Content-Type', 'application/json')
-    .json ({ success: true, msg: 'delete all categories! '})
+const postCategory = async (req, res, next) => {
+    try {
+        const category = await Category.create(req.body);
+
+        res
+        .status(201)
+        .setHeader('Content-Type', 'application/json')
+        .json(category)
+
+    } catch (err) {
+        throw new Error(`Error creating a new category: ${err.message}`);
+    }
+}
+
+const deleteCategories = async (req, res, next) => {
+
+    try {
+        await Category.deleteMany();
+
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json ({ success: true, msg: 'delete all categories! '})
+
+    } catch(err) {
+        throw new Error(`Error deleting all categories: ${err.message}`)
+    }
+    
 }
 
 // For '/:categoryId' endpoint
 
-const getCategory = (req, res, next) => {
-    res
-    .status(200)
-    .setHeader('Content-Type', 'application/json')
-    .json({ success: true, msg: `show me one category with id : ${req.params.categoryId}`})
+const getCategory = async (req, res, next) => {
+    try {
+        const category = await Category.findById(req.params.categoryId);
+
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(category)
+
+    } catch (err) {
+        throw new Error(`Error getting category id of ${req.params.categoryId}: ${err.message}`)
+    }
+
 }
 
-const updateCategory = (req, res, next) => {
-    res
-    .status(200)
-    .setHeader('Content-Type', 'application/json')
-    .json({ success: true, msg: `update category with id: ${req.params.categoryId}`})
+const updateCategory = async (req, res, next) => {
+    try {
+        const category = await Category.findByIdAndUpdate(req.params.categoryId, {
+            $set: req.body
+        }, { new: true});
+
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(category);
+    } catch (err){
+        throw new Error(`Error updating category id of ${req.params.categoryId}: ${err.message}`)
+    }
 }
 
-const deleteCategory = (req, res, next) => {
-    res
-    .status(200)
-    .setHeader('Content-Type', 'application/json')
-    .json({ success: true, msg: `delete category with id: ${req.params.categoryId}`})
+
+const deleteCategory = async (req, res, next) => {
+
+    try {
+        await Category.findByIdAndDelete(req.params.categoryId);
+
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json({ success: true, msg: `delete category with id: ${req.params.categoryId}`})
+
+    } catch (err){
+        throw new Error (`Error deleting category id of ${req.params.categoryId}: ${err.message}`)
+    }
 }
 
 module.exports = {

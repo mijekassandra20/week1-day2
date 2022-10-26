@@ -17,12 +17,12 @@ const userValidator = (req, res, next) => {
     if(req.body){
        if(
         !req.body.userName ||
-        !req.body.gender ||
         !req.body.firstName ||
         !req.body.lastName ||
+        !req.body.gender ||
         !req.body.email ||
-        !req.body.password ||
-        !req.body.phoneNumber
+        !req.body.password
+        // !req.body.phoneNumber
        ) {
         res
         .status(400)
@@ -39,11 +39,12 @@ const userValidator = (req, res, next) => {
 const itemValidator = (req, res, next) => {
     if(req.body){
        if(
+        !req.body.itemName ||
         !req.body.itemDescription ||
         !req.body.gender ||
         !req.body.price ||
-        !req.body.category ||
-        !req.body.colors ||
+        !req.body.isClearance ||
+        !req.body.color ||
         !req.body.sizes 
        ) {
         res
@@ -56,9 +57,23 @@ const itemValidator = (req, res, next) => {
     }
 }
 
+const adminValidator = (req, res, next) => {
+    // check if admin value is true from req.user
+
+    if (req.user.admin) {
+        next()
+    } else {
+        res
+        .status(403)
+        .setHeader('Content-Type', 'application/json')
+        .json({ success: false, msg: 'Unauthorized to access this resource!'})
+    }
+}
+
 
 module.exports = {
     categoryValidator,
     userValidator,
-    itemValidator
+    itemValidator,
+    adminValidator
 }
