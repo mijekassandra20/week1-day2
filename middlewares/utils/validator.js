@@ -22,7 +22,6 @@ const userValidator = (req, res, next) => {
         !req.body.gender ||
         !req.body.email ||
         !req.body.password
-        // !req.body.phoneNumber
        ) {
         res
         .status(400)

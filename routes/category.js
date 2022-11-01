@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const { 
     getCategories,
     postCategory,
@@ -9,24 +10,25 @@ const {
     deleteCategory 
 
 } = require('../controllers/categoryController');
+
 const reqLogger = require('../middlewares/reqLogger');
 
 const {
-    categoryValidator
-
+    categoryValidator,
 }= require('../middlewares/utils/validator');
 
+const protectedRoute = require('../middlewares/auth')
 
 //root
 router.route('/')
     .get(reqLogger, getCategories)
-    .post(reqLogger, categoryValidator, postCategory)
-    .delete(reqLogger, deleteCategories)
+    .post(reqLogger, protectedRoute, categoryValidator, postCategory)
+    .delete(reqLogger, protectedRoute, deleteCategories)
 
 //categoryId
 router.route('/:categoryId')
     .get(reqLogger, getCategory)
-    .put(reqLogger, updateCategory)
-    .delete(reqLogger, deleteCategory)
+    .put(reqLogger, protectedRoute, updateCategory)
+    .delete(reqLogger, protectedRoute, deleteCategory)
 
 module.exports = router;
